@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.oj.mapper.OjMapper">
+
+    <resultMap type="Oj" id="OjResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="difficulty"    column="difficulty"    />
+        <result property="likeNum"    column="likeNum"    />
+        <result property="description"    column="description"    />
+        <result property="chapterid"    column="chapterid"    />
+        <result property="code"    column="code"    />
+        <result property="codemethod"   column="codemethod"    />
+    </resultMap>
+
+    <resultMap id="OjTestcaseResult" type="Oj" extends="OjResult">
+        <collection property="testcaseList" notNullColumn="sub_id" javaType="java.util.List" resultMap="TestcaseResult" />
+    </resultMap>
+
+    <resultMap type="Testcase" id="TestcaseResult">
+        <result property="id"    column="sub_id"    />
+        <result property="testcases"    column="sub_testcases"    />
+        <result property="answer"    column="sub_answer"    />
+        <result property="oid"    column="sub_oid"    />
+        <result property="mark"    column="sub_mark"    />
+    </resultMap>
+
+    <sql id="selectOjVo">
+        select id, title, difficulty, likeNum, description, chapterid,code,codemethod from oj
+    </sql>
+
+    <select id="selectOjList" parameterType="Oj" resultMap="OjResult">
+        <include refid="selectOjVo"/>
+        <where>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="difficulty != null  and difficulty != ''"> and difficulty = #{difficulty}</if>
+            <if test="likeNum != null "> and likeNum = #{likeNum}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="chapterid != null "> and chapterid = #{chapterid}</if>
+             <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="codemethod != null  and codemethod != ''"> and codemethod = #{codemethod}</if>
+             <if test="courseId != null "> and chapterid in (select id from chapter where courseid = #{courseId})</if>
+        </where>
+    </select>
+
+    <select id="selectOjById" parameterType="Long" resultMap="OjTestcaseResult">
+        select a.id, a.title, a.difficulty, a.likeNum, a.description, a.chapterid,a.code,a.codemethod,
+               b.id as sub_id, b.testcases as sub_testcases, b.answer as sub_answer, b.oid as sub_oid, b.mark as sub_mark
+        from oj a
+                 left join testcase b on b.oid = a.id
+        where a.id = #{id}
+    </select>
+    <select id="isExistSo" resultType="java.lang.Integer">
+        select count(*) from so where sid = #{sid} and oid = #{oid}
+    </select>
+    <select id="getComments" resultType="com.ruoyi.oj.domain.Comments">
+        select comments.id id,comments.sid sid,sys_user.user_name username,oid,content from sys_user,comments where sys_user.user_id = comments.sid and oid = #{id}
+    </select>
+
+    <insert id="insertOj" parameterType="Oj" useGeneratedKeys="true" keyProperty="id">
+        insert into oj
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="difficulty != null">difficulty,</if>
+            <if test="likeNum != null">likeNum,</if>
+            <if test="description != null">description,</if>
+            <if test="chapterid != null">chapterid,</if>
+            <if test="code != null">code,</if>
+            <if test="codemethod != null">codemethod,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="difficulty != null">#{difficulty},</if>
+            <if test="likeNum != null">#{likeNum},</if>
+            <if test="description != null">#{description},</if>
+            <if test="chapterid != null">#{chapterid},</if>
+            <if test="code != null">#{code},</if>
+            <if test="codemethod != null">#{codemethod},</if>
+        </trim>
+    </insert>
+
+    <update id="updateOj" parameterType="Oj">
+        update oj
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="difficulty != null">difficulty = #{difficulty},</if>
+            <if test="likeNum != null">likeNum = #{likeNum},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="chapterid != null">chapterid = #{chapterid},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="codemethod != null">codemethod = #{codemethod},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOjById" parameterType="Long">
+        delete from oj where id = #{id}
+    </delete>
+
+    <delete id="deleteOjByIds" parameterType="String">
+        delete from oj where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTestcaseByOids" parameterType="String">
+        delete from testcase where oid in
+        <foreach item="oid" collection="array" open="(" separator="," close=")">
+            #{oid}
+        </foreach>
+    </delete>
+
+    <delete id="deleteTestcaseByOid" parameterType="Long">
+        delete from testcase where oid = #{oid}
+    </delete>
+
+    <insert id="batchTestcase">
+        insert into testcase( id, testcases, answer, oid, mark) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.testcases}, #{item.answer}, #{item.oid}, #{item.mark})
+        </foreach>
+    </insert>
+    <insert id="insertSo">
+        insert into so(sid, oid) VALUE (#{sid},#{oid})
+    </insert>
+</mapper>

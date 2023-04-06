@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.chapter.mapper.ChapterMapper">
+
+    <resultMap type="Chapter" id="ChapterResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="courseid"    column="courseid"    />
+        <result property="orderNum"    column="orderNum"    />
+        <result property="parentid"    column="parentid"    />
+    </resultMap>
+
+    <sql id="selectChapterVo">
+        select id, name, courseid, orderNum, parentid from chapter
+    </sql>
+
+    <select id="selectChapterList" parameterType="Chapter" resultMap="ChapterResult">
+        <include refid="selectChapterVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="courseid != null "> and courseid = #{courseid}</if>
+            <if test="orderNum != null "> and orderNum = #{orderNum}</if>
+            <if test="parentid != null "> and parentid = #{parentid}</if>
+        </where>
+    </select>
+
+    <select id="selectChapterById" parameterType="Long" resultMap="ChapterResult">
+        <include refid="selectChapterVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectCidList" resultType="java.lang.Long">
+        select id from course where teacher = #{userId}
+    </select>
+
+    <insert id="insertChapter" parameterType="Chapter" useGeneratedKeys="true" keyProperty="id">
+        insert into chapter
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="courseid != null">courseid,</if>
+            <if test="orderNum != null">orderNum,</if>
+            <if test="parentid != null">parentid,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="courseid != null">#{courseid},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="parentid != null">#{parentid},</if>
+        </trim>
+    </insert>
+
+    <update id="updateChapter" parameterType="Chapter">
+        update chapter
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="courseid != null">courseid = #{courseid},</if>
+            <if test="orderNum != null">orderNum = #{orderNum},</if>
+            <if test="parentid != null">parentid = #{parentid},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteChapterById" parameterType="Long">
+        delete from chapter where id = #{id}
+    </delete>
+
+    <delete id="deleteChapterByIds" parameterType="String">
+        delete from chapter where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

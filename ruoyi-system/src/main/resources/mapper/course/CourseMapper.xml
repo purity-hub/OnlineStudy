@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.course.mapper.CourseMapper">
+
+    <resultMap type="Course" id="CourseResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="teacher"    column="teacher"    />
+        <result property="introduce"    column="introduce"    />
+        <result property="picture"    column="picture"    />
+        <result property="ispublic"    column="ispublic"    />
+        <result property="period"    column="period"    />
+        <result property="starttime"    column="starttime"    />
+        <result property="endtime"    column="endtime"    />
+        <result property="progress"    column="progress"    />
+        <result property="hours"    column="hours"    />
+        <result property="sayabout"    column="sayabout"    />
+        <result property="peculiarity"    column="peculiarity"    />
+        <result property="request"    column="request"    />
+    </resultMap>
+
+    <sql id="selectCourseVo">
+        select id, name, teacher, introduce, picture, ispublic, period, starttime, endtime, progress, hours, sayabout, peculiarity, request from course
+    </sql>
+
+    <select id="selectCourseList" parameterType="Course" resultMap="CourseResult">
+        <include refid="selectCourseVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="teacher != null "> and teacher = #{teacher}</if>
+            <if test="introduce != null  and introduce != ''"> and introduce = #{introduce}</if>
+            <if test="picture != null  and picture != ''"> and picture = #{picture}</if>
+            <if test="ispublic != null "> and ispublic = #{ispublic}</if>
+            <if test="period != null "> and period = #{period}</if>
+            <if test="starttime != null "> and starttime = #{starttime}</if>
+            <if test="endtime != null "> and endtime = #{endtime}</if>
+            <if test="progress != null  and progress != ''"> and progress = #{progress}</if>
+            <if test="hours != null "> and hours = #{hours}</if>
+            <if test="sayabout != null  and sayabout != ''"> and sayabout = #{sayabout}</if>
+            <if test="peculiarity != null  and peculiarity != ''"> and peculiarity = #{peculiarity}</if>
+            <if test="request != null  and request != ''"> and request = #{request}</if>
+        </where>
+    </select>
+
+    <select id="selectCourseById" parameterType="Long" resultMap="CourseResult">
+        <include refid="selectCourseVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectMyCourseList" resultType="com.ruoyi.course.domain.Course">
+        select course.id,name,teacher,introduce,picture,ispublic from course
+        ,cs where cs.cid = course.id and cs.sid = #{userId}
+    </select>
+    <select id="selectPublicCourseList" resultType="com.ruoyi.course.domain.Course">
+        <include refid="selectCourseVo"/>
+        where ispublic = 1
+    </select>
+    <select id="isChoose" resultType="java.lang.Integer">
+        select count(*) from cs where sid = #{userId} and cid = #{courseId}
+    </select>
+    <select id="selectTeacherList" resultType="com.ruoyi.common.core.domain.entity.SysUser">
+        select sys_user.user_id userId, user_name userName from sys_user,sys_user_role,sys_role where sys_user.user_id = sys_user_role.user_id and sys_user_role.role_id = sys_role.role_id and sys_role.role_key = 'teacher'
+    </select>
+    <select id="selectTeacherNameById" resultType="java.lang.String">
+        select user_name from sys_user where user_id = #{teacherid}
+    </select>
+
+    <insert id="insertCourse" parameterType="Course" useGeneratedKeys="true" keyProperty="id">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="teacher != null">teacher,</if>
+            <if test="introduce != null">introduce,</if>
+            <if test="picture != null">picture,</if>
+            <if test="ispublic != null">ispublic,</if>
+            <if test="period != null">period,</if>
+            <if test="starttime != null">starttime,</if>
+            <if test="endtime != null">endtime,</if>
+            <if test="progress != null">progress,</if>
+            <if test="hours != null">hours,</if>
+            <if test="sayabout != null">sayabout,</if>
+            <if test="peculiarity != null">peculiarity,</if>
+            <if test="request != null">request,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="teacher != null">#{teacher},</if>
+            <if test="introduce != null">#{introduce},</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="ispublic != null">#{ispublic},</if>
+            <if test="period != null">#{period},</if>
+            <if test="starttime != null">#{starttime},</if>
+            <if test="endtime != null">#{endtime},</if>
+            <if test="progress != null">#{progress},</if>
+            <if test="hours != null">#{hours},</if>
+            <if test="sayabout != null">#{sayabout},</if>
+            <if test="peculiarity != null">#{peculiarity},</if>
+            <if test="request != null">#{request},</if>
+        </trim>
+    </insert>
+    <insert id="chooseCourse">
+        insert into cs(sid,cid) values(#{userId},#{courseId})
+    </insert>
+
+    <update id="updateCourse" parameterType="Course">
+        update course
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="teacher != null">teacher = #{teacher},</if>
+            <if test="introduce != null">introduce = #{introduce},</if>
+            <if test="picture != null">picture = #{picture},</if>
+            <if test="ispublic != null">ispublic = #{ispublic},</if>
+            <if test="period != null">period = #{period},</if>
+            <if test="starttime != null">starttime = #{starttime},</if>
+            <if test="endtime != null">endtime = #{endtime},</if>
+            <if test="progress != null">progress = #{progress},</if>
+            <if test="hours != null">hours = #{hours},</if>
+            <if test="sayabout != null">sayabout = #{sayabout},</if>
+            <if test="peculiarity != null">peculiarity = #{peculiarity},</if>
+            <if test="request != null">request = #{request},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCourseById" parameterType="Long">
+        delete from course where id = #{id}
+    </delete>
+
+    <delete id="deleteCourseByIds" parameterType="String">
+        delete from course where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

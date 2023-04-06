@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.signin.mapper.SignrecordMapper">
+
+    <resultMap type="Signrecord" id="SignrecordResult">
+        <result property="id"    column="id"    />
+        <result property="courseId"    column="course_id"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <resultMap type="SigninView" id="SignviewResult">
+        <result property="id"    column="id"    />
+        <result property="courseId"    column="course_id"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <resultMap id="SignrecordSigninResult" type="Signrecord" extends="SignrecordResult">
+        <collection property="signinList" notNullColumn="sub_id" javaType="java.util.List" resultMap="SigninResult" />
+    </resultMap>
+
+    <resultMap type="Signin" id="SigninResult">
+        <result property="id"    column="sub_id"    />
+        <result property="signId"    column="sub_sign_id"    />
+        <result property="userId"    column="sub_user_id"    />
+    </resultMap>
+
+    <sql id="selectSignrecordVo">
+        select id, course_id, start_time, end_time, status from signrecord
+    </sql>
+
+    <select id="selectSignrecordList" parameterType="Signrecord" resultMap="SignrecordResult">
+        <include refid="selectSignrecordVo"/>
+        <where>
+            <if test="courseId != null "> and course_id = #{courseId}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectSignrecordById" parameterType="Long" resultMap="SignrecordSigninResult">
+        select a.id, a.course_id, a.start_time, a.end_time, a.status,
+               b.id as sub_id, b.sign_id as sub_sign_id, b.user_id as sub_user_id
+        from signrecord a
+                 left join signin b on b.sign_id = a.id
+        where a.id = #{id}
+    </select>
+    <select id="selectSigninList" resultType="com.ruoyi.signin.domain.SigninView" resultMap="SignviewResult">
+        select id, course_id, start_time, end_time, status from signrecord where course_id = #{courseId}
+    </select>
+    <select id="selectTeacherName" resultType="java.lang.String">
+        select user_name from course,sys_user where course.teacher = sys_user.user_id and course.id = #{courseId}
+    </select>
+    <select id="selectCourseName" resultType="java.lang.String">
+        select name from course where id = #{courseId}
+    </select>
+    <select id="selectTotalUserNum" resultType="java.lang.Integer">
+        select count(*) from course,cs where course.id = cs.cid and course.id = #{courseId}
+    </select>
+    <select id="selectSignedUserNum" resultType="java.lang.Integer">
+        select count(*) from signin,signrecord where signin.sign_id = signrecord.id and signrecord.course_id = #{courseId}
+    </select>
+    <select id="selectSignStatus" resultType="java.lang.Integer">
+        select count(*) from signin,signrecord where signin.sign_id = signrecord.id and signrecord.id = #{signId} and signin.user_id = #{userId}
+    </select>
+    <select id="selectEndTime" resultType="java.util.Date">
+        select end_time from signrecord where id = #{signId}
+    </select>
+
+    <insert id="insertSignrecord" parameterType="Signrecord" useGeneratedKeys="true" keyProperty="id">
+        insert into signrecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseId != null">course_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="courseId != null">#{courseId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSignrecord" parameterType="Signrecord">
+        update signrecord
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="courseId != null">course_id = #{courseId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSignrecordById" parameterType="Long">
+        delete from signrecord where id = #{id}
+    </delete>
+
+    <delete id="deleteSignrecordByIds" parameterType="String">
+        delete from signrecord where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSigninBySignIds" parameterType="String">
+        delete from signin where sign_id in
+        <foreach item="signId" collection="array" open="(" separator="," close=")">
+            #{signId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSigninBySignId" parameterType="Long">
+        delete from signin where sign_id = #{signId}
+    </delete>
+
+    <insert id="batchSignin">
+        insert into signin( id, sign_id, user_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.id}, #{item.signId}, #{item.userId})
+        </foreach>
+    </insert>
+    <insert id="sign">
+        insert into signin(sign_id, user_id) VALUES (#{signId}, #{userId})
+    </insert>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.es.mapper.EsMapper">
+
+    <resultMap type="Es" id="EsResult">
+        <result property="id"    column="id"    />
+        <result property="sid"    column="sid"    />
+        <result property="eid"    column="eid"    />
+        <result property="score"    column="score"    />
+        <result property="answer"    column="answer"    />
+    </resultMap>
+
+    <sql id="selectEsVo">
+        select id, sid, eid, score, answer from es
+    </sql>
+
+
+    <select id="selectEsList" parameterType="Es" resultMap="EsResult">
+        <include refid="selectEsVo"/>
+        <where>
+            <if test="sid != null "> and sid = #{sid}</if>
+            <if test="eid != null "> and eid = #{eid}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+        </where>
+    </select>
+
+    <select id="selectEsById" parameterType="Long" resultMap="EsResult">
+        <include refid="selectEsVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectEsByEid" resultType="com.ruoyi.exam.domain.Question">
+        select * from question where exam_id = #{eid}
+    </select>
+    <select id="selectEsByEidAndSid" resultType="java.lang.Integer">
+        select count(*) from es where eid = #{eid} and sid = #{sid}
+    </select>
+
+
+    <insert id="insertEs" parameterType="Es" useGeneratedKeys="true" keyProperty="id">
+        insert into es
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">sid,</if>
+            <if test="eid != null">eid,</if>
+            <if test="score != null">score,</if>
+            <if test="answer != null">answer,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">#{sid},</if>
+            <if test="eid != null">#{eid},</if>
+            <if test="score != null">#{score},</if>
+            <if test="answer != null">#{answer},</if>
+        </trim>
+    </insert>
+
+    <update id="updateEs" parameterType="Es">
+        update es
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sid != null">sid = #{sid},</if>
+            <if test="eid != null">eid = #{eid},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="answer != null">answer = #{answer},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEsById" parameterType="Long">
+        delete from es where id = #{id}
+    </delete>
+
+    <delete id="deleteEsByIds" parameterType="String">
+        delete from es where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
