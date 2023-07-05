@@ -159,6 +159,53 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '',
+    component: Layout,
+    hidden: true,
+    // component: () => import('@/views/question/bank.vue'),
+    children: [
+      {
+        path: 'question/bank',
+        component: () => import('@/views/question/bank.vue'),
+        name: 'QuestionBank',
+        meta: { title: '题库', icon: 'list' }
+      }
+    ]
+  },
+  {
+    path:'/turtle',
+    component: Layout,//这里只能用Layout，不然会没有侧边栏
+    hidden: true,
+    name: 'Turtle',
+    meta: { title: '海龟绘图', icon: 'list' },
+    children: [
+      {
+        path: 'latest',
+        component: () => import('@/views/turtle/index.vue'),
+      },
+      {
+        path: 'upvotes',
+        component: () => import('@/views/turtle/upvotes.vue'),
+      },
+      {
+        path: 'colleges',
+        component: () => import('@/views/turtle/colleges.vue'),
+      },
+      {
+        path: 'colleges/:collegeName',
+        component: () => import('@/views/turtle/school.vue'),
+      },
+      {
+        path: 'new',
+        component: () => import('@/views/turtle/new.vue'),
+      },
+      {
+        path: 'my',
+        component: () => import('@/views/turtle/my.vue'),
+      }
+    ]
+  }
 ]
 
 // 动态路由，基于用户权限动态去加载

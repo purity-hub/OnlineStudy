@@ -3,7 +3,7 @@ package com.ruoyi.es.service.impl;
 import java.util.HashMap;
 import java.util.List;
 
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.question.domain.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.es.mapper.EsMapper;

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.question.mapper.QuestionMapper">
+
+    <resultMap type="Question" id="QuestionResult">
+        <result property="id"    column="id"    />
+        <result property="questionType"    column="question_type"    />
+        <result property="context"    column="context"    />
+        <result property="answer"    column="answer"    />
+        <result property="selectA"    column="select_a"    />
+        <result property="selectB"    column="select_b"    />
+        <result property="selectC"    column="select_c"    />
+        <result property="selectD"    column="select_d"    />
+        <result property="score"    column="score"    />
+        <result property="direction"    column="direction"    />
+        <result property="points"    column="points"    />
+        <result property="difficulty"    column="difficulty"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="usedTime"    column="used_time"    />
+        <result property="parse"    column="parse"    />
+    </resultMap>
+
+    <sql id="selectQuestionVo">
+        select id, question_type, context, answer, select_a, select_b, select_c, select_d, score, direction, points, difficulty, create_by, create_time, update_time, used_time,parse from question
+    </sql>
+
+    <select id="selectQuestionList" parameterType="Question" resultMap="QuestionResult">
+        <include refid="selectQuestionVo"/>
+        <where>
+            <if test="questionType != null "> and question_type = #{questionType}</if>
+            <if test="context != null  and context != ''"> and context = #{context}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+            <if test="selectA != null  and selectA != ''"> and select_a = #{selectA}</if>
+            <if test="selectB != null  and selectB != ''"> and select_b = #{selectB}</if>
+            <if test="selectC != null  and selectC != ''"> and select_c = #{selectC}</if>
+            <if test="selectD != null  and selectD != ''"> and select_d = #{selectD}</if>
+            <if test="score != null "> and score = #{score}</if>
+            <if test="direction != null  and direction != ''"> and direction = #{direction}</if>
+            <if test="points != null  and points != ''"> and points = #{points}</if>
+            <if test="difficulty != null  and difficulty != ''"> and difficulty = #{difficulty}</if>
+            <if test="usedTime != null "> and used_time = #{usedTime}</if>
+            <if test="parse != null "> and parse = #{parse}</if>
+        </where>
+    </select>
+
+    <select id="selectQuestionById" parameterType="Long" resultMap="QuestionResult">
+        <include refid="selectQuestionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertQuestion" parameterType="Question" useGeneratedKeys="true" keyProperty="id">
+        insert into question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="questionType != null">question_type,</if>
+            <if test="context != null">context,</if>
+            <if test="answer != null">answer,</if>
+            <if test="selectA != null">select_a,</if>
+            <if test="selectB != null">select_b,</if>
+            <if test="selectC != null">select_c,</if>
+            <if test="selectD != null">select_d,</if>
+            <if test="score != null">score,</if>
+            <if test="direction != null">direction,</if>
+            <if test="points != null">points,</if>
+            <if test="difficulty != null">difficulty,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="usedTime != null">used_time,</if>
+            <if test="parse != null">parse,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="questionType != null">#{questionType},</if>
+            <if test="context != null">#{context},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="selectA != null">#{selectA},</if>
+            <if test="selectB != null">#{selectB},</if>
+            <if test="selectC != null">#{selectC},</if>
+            <if test="selectD != null">#{selectD},</if>
+            <if test="score != null">#{score},</if>
+            <if test="direction != null">#{direction},</if>
+            <if test="points != null">#{points},</if>
+            <if test="difficulty != null">#{difficulty},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="usedTime != null">#{usedTime},</if>
+            <if test="parse != null">#{parse},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQuestion" parameterType="Question">
+        update question
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="questionType != null">question_type = #{questionType},</if>
+            <if test="context != null">context = #{context},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="selectA != null">select_a = #{selectA},</if>
+            <if test="selectB != null">select_b = #{selectB},</if>
+            <if test="selectC != null">select_c = #{selectC},</if>
+            <if test="selectD != null">select_d = #{selectD},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="direction != null">direction = #{direction},</if>
+            <if test="points != null">points = #{points},</if>
+            <if test="difficulty != null">difficulty = #{difficulty},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="usedTime != null">used_time = #{usedTime},</if>
+            <if test="parse != null">parse = #{parse},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQuestionById" parameterType="Long">
+        delete from question where id = #{id}
+    </delete>
+
+    <delete id="deleteQuestionByIds" parameterType="String">
+        delete from question where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

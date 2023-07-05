@@ -31,8 +31,8 @@
         <include refid="selectEsVo"/>
         where id = #{id}
     </select>
-    <select id="selectEsByEid" resultType="com.ruoyi.exam.domain.Question">
-        select * from question where exam_id = #{eid}
+    <select id="selectEsByEid" resultType="com.ruoyi.question.domain.Question">
+        select * from question, es where question.id = es.eid and es.eid = #{eid}
     </select>
     <select id="selectEsByEidAndSid" resultType="java.lang.Integer">
         select count(*) from es where eid = #{eid} and sid = #{sid}

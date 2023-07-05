@@ -16,10 +16,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 【请填写功能名称】Controller
@@ -131,9 +130,15 @@ public class OjController extends BaseController
             Process process = Runtime.getRuntime().exec(cmd);
             //获取运行结果
             //运行结果
-            String result1 = new String(process.getInputStream().readAllBytes());
+            InputStream inputStream = process.getInputStream();
+            String result1 = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines().parallel().collect(Collectors.joining(System.lineSeparator()));
+
             //报错信息
-            String error1 = new String(process.getErrorStream().readAllBytes());
+            InputStream errorStream = process.getErrorStream();
+            String error1 = new BufferedReader(new InputStreamReader(errorStream))
+                    .lines().parallel().collect(Collectors.joining(System.lineSeparator()));
+
             String result = result1 + error1;
             //进程终止
             process.destroy();
@@ -168,9 +173,14 @@ public class OjController extends BaseController
             result.setTestcase(param);
             Process process = Runtime.getRuntime().exec(cmd);
             //运行结果
-            String result1 = new String(process.getInputStream().readAllBytes());
+            InputStream inputStream = process.getInputStream();
+
+            String result1 = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines().parallel().collect(Collectors.joining(System.lineSeparator()));
             //报错信息
-            String error1 = new String(process.getErrorStream().readAllBytes());
+            InputStream errorStream = process.getErrorStream();
+            String error1 = new BufferedReader(new InputStreamReader(errorStream))
+                    .lines().parallel().collect(Collectors.joining(System.lineSeparator()));
             //errer1删除 File\"D开头的子串
             error1 = error1.replaceAll("\bFile\\\"D:.*\b","");
             //去掉换行

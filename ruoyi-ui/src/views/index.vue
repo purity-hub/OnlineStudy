@@ -112,7 +112,7 @@ export default {
 }
 
 .image {
-  width: 500px;
+  width: 100%;
   height: 350px;
   display: block;
 }

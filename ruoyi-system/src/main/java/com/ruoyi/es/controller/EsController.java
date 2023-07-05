@@ -5,7 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSON;
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.question.domain.Question;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

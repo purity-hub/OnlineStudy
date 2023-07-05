@@ -138,10 +138,11 @@
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" />
+<!--          <el-table-column label="用户编号" align="center" key="userId" prop="userId" v-if="columns[0].visible" min-width="50%" />-->
+          <el-table-column label="学号" align="center" key="snumber" prop="snumber" v-if="columns[7].visible" min-width="100%" :show-overflow-tooltip="true" />
           <el-table-column label="用户名称" align="center" key="userName" prop="userName" v-if="columns[1].visible" :show-overflow-tooltip="true" />
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName" v-if="columns[2].visible" :show-overflow-tooltip="true" />
-          <el-table-column label="部门" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
+          <el-table-column label="班级" align="center" key="deptName" prop="dept.deptName" v-if="columns[3].visible" :show-overflow-tooltip="true" />
           <el-table-column label="手机号码" align="center" key="phonenumber" prop="phonenumber" v-if="columns[4].visible" width="120" />
           <el-table-column label="状态" align="center" key="status" v-if="columns[5].visible">
             <template slot-scope="scope">
@@ -205,6 +206,19 @@
     <!-- 添加或修改用户配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <!--学号-->
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="学号" prop="snumber">
+              <el-input v-model="form.snumber" placeholder="请输入学号" maxlength="30" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="用户名称" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入用户名称" maxlength="30" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户昵称" prop="nickName">
@@ -420,7 +434,8 @@ export default {
         { key: 3, label: `班级`, visible: true },
         { key: 4, label: `手机号码`, visible: true },
         { key: 5, label: `状态`, visible: true },
-        { key: 6, label: `创建时间`, visible: true }
+        { key: 6, label: `创建时间`, visible: true },
+        { key: 7, label: `学号`, visible: true }
       ],
       // 表单校验
       rules: {
@@ -521,6 +536,7 @@ export default {
         sex: undefined,
         status: "0",
         remark: undefined,
+        snumber: undefined,
         postIds: [],
         roleIds: []
       };

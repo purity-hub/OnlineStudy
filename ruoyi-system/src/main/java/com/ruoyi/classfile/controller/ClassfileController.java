@@ -54,7 +54,7 @@ public class ClassfileController extends BaseController
     {
         List<Classfile> list = classfileService.selectClassfileList(classfile);
         ExcelUtil<Classfile> util = new ExcelUtil<Classfile>(Classfile.class);
-        util.exportExcel(response, list, "classfile数据");
+        util.exportExcel(response, list, "课程文件数据");
     }
 
     /**

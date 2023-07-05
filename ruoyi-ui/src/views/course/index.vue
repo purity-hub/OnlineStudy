@@ -150,10 +150,10 @@
           <el-input v-model="form.introduce" type="textarea" placeholder="请输入内容" />
         </el-form-item>
         <el-form-item label="课程图片" prop="picture">
-          <image-upload v-model="form.picture"/>
+          <image-upload :limit="1" v-model="form.picture"/>
         </el-form-item>
         <el-form-item label="公开课" prop="ispublic">
-          <el-switch v-model="form.ispublic" active-value="1" inactive-value="0" active-text="是" inactive-text="否" active-color="#13ce66" inactive-color="#ff4949"/>
+          <el-switch v-model="form.ispublic" :active-value="1" :inactive-value="0" active-text="是" inactive-text="否" active-color="#13ce66" inactive-color="#ff4949"/>
         </el-form-item>
         <el-form-item label="期次" prop="period">
           <el-input v-model="form.period" placeholder="请输入期次" />

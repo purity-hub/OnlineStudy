@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.ruoyi.es.domain.Es;
 import com.ruoyi.exam.domain.Exam;
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.exam.domain.ExamQuestion;
+import com.ruoyi.question.domain.Question;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -13,6 +15,7 @@ import org.apache.ibatis.annotations.Param;
  * @author ruoyi
  * @date 2023-04-05
  */
+@Mapper
 public interface ExamMapper
 {
     /**
@@ -71,7 +74,7 @@ public interface ExamMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteQuestionByExamIds(Long[] ids);
+//    public int deleteQuestionByExamIds(Long[] ids);
 
     /**
      * 批量新增题目
@@ -81,6 +84,13 @@ public interface ExamMapper
      */
     public int batchQuestion(List<Question> questionList);
 
+    /**
+     * 单个新增题目
+     * @param question
+     * @return
+     */
+    public int insertQuestion(Question question);
+
 
     /**
      * 通过试卷主键删除题目信息
@@ -88,9 +98,13 @@ public interface ExamMapper
      * @param id 试卷ID
      * @return 结果
      */
-    public int deleteQuestionByExamId(Long id);
+    public int deleteQuestionById(Long id);
 
     int selectIsSubmit(@Param("eid") Long eid, @Param("sid") Long sid);
 
     Es selectExamMyAnsById(@Param("eid") Long eid, @Param("sid") Long sid);
+
+    void insertExamQuestion(ExamQuestion examQuestion);
+
+    void deleteExamQuestionByExamIds(Long[] ids);
 }

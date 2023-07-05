@@ -178,13 +178,13 @@ export default {
                   message: '请检查题目信息',
                   type: 'warning'
                 })
-                return
               }
             })
           }
           //此时可以提交
           let form1 = Object.assign({},this.form)
           form1.questionList = Object.assign([],questionList)
+          console.log(form1)
           for(let i=0;i<form1.questionList.length;i++){
             let question = form1.questionList[i]
             //context,answer,select
@@ -219,7 +219,6 @@ export default {
             message: '请检查试卷信息',
             type: 'warning'
           })
-          return
         }
       })
     },

@@ -3,7 +3,8 @@ package com.ruoyi.es.mapper;
 import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.es.domain.Es;
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.question.domain.Question;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -12,6 +13,7 @@ import org.apache.ibatis.annotations.Param;
  * @author ruoyi
  * @date 2023-04-05
  */
+@Mapper
 public interface EsMapper
 {
     /**

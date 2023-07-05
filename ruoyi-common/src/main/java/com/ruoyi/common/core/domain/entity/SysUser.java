@@ -14,7 +14,7 @@ import com.ruoyi.common.xss.Xss;
 
 /**
  * 用户对象 sys_user
- * 
+ *
  * @author ruoyi
  */
 public class SysUser extends BaseEntity
@@ -36,6 +36,9 @@ public class SysUser extends BaseEntity
     /** 用户昵称 */
     @Excel(name = "用户名称")
     private String nickName;
+
+    @Excel(name = "学号")
+    private String snumber;
 
     /** 用户邮箱 */
     @Excel(name = "用户邮箱")
@@ -107,6 +110,14 @@ public class SysUser extends BaseEntity
     public void setUserId(Long userId)
     {
         this.userId = userId;
+    }
+
+    public String getSnumber() {
+        return snumber;
+    }
+
+    public void setSnumber(String snumber) {
+        this.snumber = snumber;
     }
 
     public boolean isAdmin()

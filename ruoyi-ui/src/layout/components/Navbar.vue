@@ -7,6 +7,16 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
+        <!--海龟绘图-->
+        <el-tooltip content="海龟绘图" effect="dark" placement="bottom">
+          <el-dropdown class="right-menu-item hover-effect" trigger="click">
+            <div class="avatar-wrapper">
+              <router-link to="/turtle/latest">
+                <span>海龟绘图</span>
+              </router-link>
+            </div>
+          </el-dropdown>
+        </el-tooltip>
         <search id="header-search" class="right-menu-item" v-hasRole="['admin']" />
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
@@ -25,6 +35,9 @@
         <el-dropdown-menu slot="dropdown">
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
+          </router-link>
+          <router-link to="/question/bank">
+            <el-dropdown-item>试题库</el-dropdown-item>
           </router-link>
           <el-dropdown-item @click.native="setting = true">
             <span>布局设置</span>

@@ -3,7 +3,7 @@ package com.ruoyi.es.service;
 import java.util.HashMap;
 import java.util.List;
 import com.ruoyi.es.domain.Es;
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.question.domain.Question;
 
 /**
  * 试卷学生成绩Service接口

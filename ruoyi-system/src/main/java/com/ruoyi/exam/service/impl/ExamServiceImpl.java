@@ -3,12 +3,13 @@ package com.ruoyi.exam.service.impl;
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.es.domain.Es;
+import com.ruoyi.exam.domain.ExamQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
-import com.ruoyi.exam.domain.Question;
+import com.ruoyi.question.domain.Question;
 import com.ruoyi.exam.mapper.ExamMapper;
 import com.ruoyi.exam.domain.Exam;
 import com.ruoyi.exam.service.IExamService;
@@ -80,7 +81,7 @@ public class ExamServiceImpl implements IExamService
     @Override
     public int updateExam(Exam exam)
     {
-        examMapper.deleteQuestionByExamId(exam.getId());
+//        examMapper.deleteQuestionByExamId(exam.getId());
         insertQuestion(exam);
         return examMapper.updateExam(exam);
     }
@@ -95,7 +96,8 @@ public class ExamServiceImpl implements IExamService
     @Override
     public int deleteExamByIds(Long[] ids)
     {
-        examMapper.deleteQuestionByExamIds(ids);
+//        examMapper.deleteQuestionByExamIds(ids);
+        examMapper.deleteExamQuestionByExamIds(ids);
         return examMapper.deleteExamByIds(ids);
     }
 
@@ -109,7 +111,8 @@ public class ExamServiceImpl implements IExamService
     @Override
     public int deleteExamById(Long id)
     {
-        examMapper.deleteQuestionByExamId(id);
+//        examMapper.deleteQuestionById(id);
+        //不需要删除试卷题目
         return examMapper.deleteExamById(id);
     }
 
@@ -128,21 +131,29 @@ public class ExamServiceImpl implements IExamService
      *
      * @param exam 试卷对象
      */
+    @Transactional
     public void insertQuestion(Exam exam)
     {
         List<Question> questionList = exam.getQuestionList();
-        Long id = exam.getId();
+//        Long id = exam.getId();
         if (StringUtils.isNotNull(questionList))
         {
-            List<Question> list = new ArrayList<Question>();
-            for (Question question : questionList)
+//            List<Question> list = new ArrayList<>();
+//            for (Question question : questionList)
+//            {
+//                question.setExamId(id);
+//                list.add(question);
+//            }
+            if (questionList.size() > 0)
             {
-                question.setExamId(id);
-                list.add(question);
-            }
-            if (list.size() > 0)
-            {
-                examMapper.batchQuestion(list);
+                ExamQuestion examQuestion = new ExamQuestion();
+                examQuestion.setExamId(exam.getId());
+                for (Question question : questionList)
+                {
+                    int questionId = examMapper.insertQuestion(question);
+                    examQuestion.setQuestionId(question.getId());
+                    examMapper.insertExamQuestion(examQuestion);
+                }
             }
         }
     }
